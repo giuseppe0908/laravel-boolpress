@@ -8,6 +8,7 @@ let app = new Vue({
   methods:{
 
     delete_comic: function(id){
+      console.log(id);
       this.id= id;
     },
     no_elimina: function(){

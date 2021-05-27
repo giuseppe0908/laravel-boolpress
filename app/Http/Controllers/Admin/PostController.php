@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Post;
+use App\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -28,7 +29,9 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.create');
+        $categories = Category:: all();
+
+        return view('admin.posts.create', compact('categories'));
     }
 
     /**
@@ -40,6 +43,7 @@ class PostController extends Controller
     public function store(Request $request)
     {
       $request->validate([
+      'category_id' => 'exists:categories,id|nullable',
       'title'=> 'required|string|max:255',
       'content' => 'required|string',
       ]);
@@ -92,7 +96,7 @@ class PostController extends Controller
 
      $data = $request->all();
 
-     $data['slug'] = $this->generateslug($data['title'], $post->title != $data['title']);
+     $data['slug'] = $this->generateslug($data['title'], $post->title != $data['title'], $post->slug);
      $post->update($data);
 
      return redirect()->route('admin.posts.index');
@@ -110,11 +114,11 @@ class PostController extends Controller
       return redirect()->route('admin.posts.index');
     }
 
-    private function generateslug(string $title, bool $change = true){
+    private function generateslug(string $title, bool $change = true, string $old_slug = ''){
       $slug = Str::slug($title,'-');
 
       if (!$change) {
-        return $slug;
+        return $old_slug;
       }
 
       $slug_origin = $slug;

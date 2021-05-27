@@ -37352,6 +37352,7 @@ var app = new Vue({
   },
   methods: {
     delete_comic: function delete_comic(id) {
+      console.log(id);
       this.id = id;
     },
     no_elimina: function no_elimina() {
