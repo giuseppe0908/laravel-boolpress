@@ -27,8 +27,6 @@
                        @error('category')
                         <small class="text-danger">{{ $message }}</small>
                        @enderror
-
-
                    </div>
 
                    <div class="form-group">

@@ -6,19 +6,17 @@
 
        <div class="col-md-3">
            <div class="card">
-               <div class="card-header">{{$post->title}}</div>
+               <div class="card-header"></div>
 
                <div class="card-body">
-                 @if ($post->category)
-                  <h4>Category:{{$post->category->name}}</h4>
-                 @endif
-                   {{$post->content}}
+                    <h4>Category:{{$category->name}}</h4>
+                   {{$category->content}}
                </div>
-              <a href="{{route('admin.posts.edit', ['post' => $post->id])}}">Edit</a>
+              <a href="{{route('admin.categories.edit', ['category' => $category->id])}}">Edit</a>
               <div class="elimina">
-                  <button type="button" name="button" @click= "delete_comic({{$post->id}})">Delete</button>
-                  <div class="si-no" v-if="{{$post->id}} == id">
-                    <form class="" action="{{route('admin.posts.destroy',['post'=>$post->id])}}" method="post" v-if="id!=null">
+                  <button type="button" name="button" @click= "delete_comic({{$category->id}})">Delete</button>
+                  <div class="si-no" v-if="{{$category->id}} == id">
+                    <form class="" action="{{route('admin.categories.destroy',['category'=>$category->id])}}" method="POST" v-if="id!=null">
                       @csrf
                       @method('DELETE')
                       <input type="submit" name="Delete" value="Si " >

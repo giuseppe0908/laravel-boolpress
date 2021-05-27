@@ -1,15 +1,12 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
-use App\Post;
 use App\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Str;
 
-class PostController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,8 +15,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        $posts = Post:: all();
-        return view('admin.posts.index', compact('posts'));
+      $categories = Category:: all();
+      return view('admin.categories.index', compact('categories'));
     }
 
     /**
@@ -29,9 +26,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        $categories = Category:: all();
 
-        return view('admin.posts.create', compact('categories'));
+      return view('admin.categories.create');
     }
 
     /**
@@ -43,79 +39,72 @@ class PostController extends Controller
     public function store(Request $request)
     {
       $request->validate([
-      'category_id' => 'exists:categories,id|nullable',
-      'title'=> 'required|string|max:255',
-      'content' => 'required|string',
+      'name'=> 'required|string|max:255',
       ]);
 
       $data = $request->all();
+      $data['slug'] = $this->generateslug($data['name']);
+      $category = new Category();
+      $category->create($data) ;
 
-      $post = new Post();
-      $post->fill($data);
-      $post->slug = $this->generateslug($post->title);
-      $post->save();
+      return redirect()->route('admin.categories.index');
 
-      return redirect()->route('admin.posts.index');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Post  $post
+     * @param  Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show(Category $category )
     {
-        return view('admin.posts.show',compact('post'));
+      return view('admin.categories.show',compact('category'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Post  $post
+     * @param  Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post)
+    public function edit(Category $category )
     {
-      $categories = Category:: all();
-      return view('admin.posts.edit',compact('post','categories'));
+      return view('admin.categories.edit',compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Post  $post
+     * @param  Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(Request $request, Category  $category)
     {
       $request->validate([
-       'category_id' => 'exists:categories,id|nullable',
-       'title' => 'required|string|max:255',
-       'content' => 'required|string'
-     ]);
+      'name'=> 'required|string|max:255'
+      ]);
 
-     $data = $request->all();
+      $data = $request->all();
+      $data['slug'] = $this->generateslug($data['name'],$data['name'] != $category->name,  $category->slug );
 
-     $data['slug'] = $this->generateslug($data['title'], $post->title != $data['title'], $post->slug);
-     $post->update($data);
+      $category->update($data) ;
 
-     return redirect()->route('admin.posts.index');
+      return redirect()->route('admin.categories.index');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Post  $post
+     * @param  Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy(Category  $category)
     {
-      $post->delete();
-      return redirect()->route('admin.posts.index');
+      $category->delete();
+      return redirect()->route('admin.categories.index');
     }
-
     private function generateslug(string $title, bool $change = true, string $old_slug = ''){
       $slug = Str::slug($title,'-');
 
@@ -126,13 +115,13 @@ class PostController extends Controller
       $slug_origin = $slug;
       $count = 1;
 
-      $post_slug = Post::where('slug', '=', $slug)->first();
+      $post_slug = Category::where('slug', '=', $slug)->first();
 
       while ($post_slug) {
           $slug = $slug_origin . '-'. $count ;
           $count++ ;
 
-          $post_slug = Post::where('slug', '=', $slug)->first();
+          $post_slug = Category::where('slug', '=', $slug)->first();
       }
       return $slug;
     }

@@ -89,6 +89,7 @@
                 <div class="links">
 
                   <a href="{{route('posts.index')}}">Visualizza posts</a>
+                  <a href="{{route('admin.categories.index')}}">Visualizza le categorie</a>
 
                 </div>
             </div>

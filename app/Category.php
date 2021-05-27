@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
 {
-  // protected $fillable =[
-  //   'title'
-  // ];
+  protected $fillable =[
+    'name',
+    'slug',
+  ];
   public function posts(){
     return $this->hasMany('App\Post');
   }
