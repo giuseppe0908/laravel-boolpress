@@ -14,7 +14,7 @@
   <div class="row justify-content-center">
      <div class="col-md-8">
 
-                 <form class="" action="{{route('admin.posts.store')}}" method="post">
+                 <form class="" action="{{route('admin.posts.store')}}" method="post" enctype="multipart/form-data">
                    @csrf
                    @method('POST')
                    <div class="form-group">
@@ -44,6 +44,27 @@
                        <small class="text-danger">{{ $message }}</small>
                      @enderror
                    </div>
+
+                   <div class="form-group">
+                     <label for="cover">Cover</label>
+                     <input class="form-control @error('content') is-invalid @enderror" id="cover" type="file" name="cover">
+                     @error('cover')
+                       <small class="text-danger">{{ $message }}</small>
+                     @enderror
+                   </div>
+
+
+                  <div class="form-group">
+                    <label for="tag">Tags</label>
+                    <select class="form-control @error('tag_ids') is-invalid @enderror" id="tag" name="tag_ids[]" multiple>
+                      @foreach($tags as $tag)
+                        <option value="{{$tag->id}}">{{$tag->name}}</option>
+                      @endforeach
+                    </select>
+                    @error('tag_ids')
+                      <small class="text-danger">{{ $message }}</small>
+                    @enderror
+                  </div>
 
                    <button class="btn btn-primary" type="submit" name="button">Salva</button>
                  </form>
